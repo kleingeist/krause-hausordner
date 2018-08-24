@@ -1,0 +1,20 @@
+version: "3"
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile-nginx
+    volumes:
+      - files:/var/www/files
+    ports:
+      - "8080:80"
+    depends_on:
+      - php
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile-php
+    volumes:
+      - files:/var/www/files
+volumes:
+  files:
