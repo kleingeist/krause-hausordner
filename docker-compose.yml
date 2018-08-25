@@ -21,7 +21,7 @@ services:
     volumes:
       - files:/srv/files
     ports:
-      - "8080:80"
+      - "80:80"
     depends_on:
       - php
     environment:
