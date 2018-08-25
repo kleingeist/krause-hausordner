@@ -1,7 +1,8 @@
 FROM nginx:alpine
 ARG ANGULAR_FILEMANAGER_VERSION=master
-ARG AUTH_USER=krause
-ARG AUTH_PASS=password
+
+RUN addgroup -g 1111 krause &&\
+    adduser -D -H -u 1111 -G krause krause
 
 VOLUME /var/www/files
 WORKDIR /var/www/html
@@ -17,5 +18,6 @@ RUN tar xzf /tmp/$ANGULAR_FILEMANAGER_VERSION.tar.gz -C /tmp/ &&\
     mv /tmp/angular-filemanager-$ANGULAR_FILEMANAGER_VERSION/dist /var/www/html/node_modules/angular-filemanager
 
 ADD nginx-htpasswd-entry.sh /usr/local/bin/nginx-htpasswd-entry.sh
+
 ENTRYPOINT ["/usr/local/bin/nginx-htpasswd-entry.sh"]
 CMD ["nginx", "-g", "daemon off;"]

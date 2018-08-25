@@ -1,20 +1,44 @@
 version: "3"
 services:
+  samba:
+    image: dperson/samba
+    command: -u "$AUTH_USER;$AUTH_PASS;1111"
+             -s "hausordner;/srv/files;yes;no;no;all;none;;Hausordner"
+             -n
+             -g "force user ="
+             -r
+    volumes:
+      - files:/srv/files
+    ports:
+      - "139:139"
+      - "445:445"
+      - "137-138:137-138/udp"
+    depends_on:
+      - prepare
   web:
     build:
-      context: .
-      dockerfile: Dockerfile-nginx
+      context: nginx
     volumes:
-      - files:/var/www/files
+      - files:/srv/files
     ports:
       - "8080:80"
     depends_on:
       - php
+    environment:
+      AUTH_USER:
+      AUTH_PASS:
   php:
     build:
-      context: .
-      dockerfile: Dockerfile-php
+      context: php
     volumes:
-      - files:/var/www/files
+      - files:/srv/files
+    depends_on:
+      - prepare
+  prepare:
+    image: alpine
+    command: "chown -R 1111:1111 /srv/files"
+    volumes:
+      - files:/srv/files
+
 volumes:
   files:
