@@ -1,10 +1,10 @@
 version: "3"
 services:
   samba:
-    image: dperson/samba
+    build:
+      context: contrib/samba
     command: -u "$AUTH_USER;$AUTH_PASS;1111"
              -s "hausordner;/srv/files;yes;no;no;all;none;;Hausordner"
-             -n
              -g "force user ="
              -r
     volumes:
