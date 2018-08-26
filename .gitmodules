@@ -1,3 +1,0 @@
-[submodule "contrib/samba"]
-	path = contrib/samba
-	url = https://github.com/dperson/samba.git
