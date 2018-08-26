@@ -1,16 +1,21 @@
 version: "3"
 volumes:
   hausordner-files:
+  admin-files:
 services:
   samba:
     build:
       context: contrib/samba
-    command: -u "$HAUSORDNER_USER;$HAUSORDNER_PASS;2222"
+    command: -u "$ADMIN_USER;$ADMIN_PASS;1111"
+             -u "$HAUSORDNER_USER;$HAUSORDNER_PASS;2222"
              -s "hausordner;/srv/hausordner-files;yes;no;no;all;none;;Hausordner"
+             -s "admin;/srv/admin-files;yes;no;no;$ADMIN_USER;none;;Admin Ordner"
+             -n
              -g "force user ="
              -r
     volumes:
       - hausordner-files:/srv/hausordner-files
+      - admin-files:/srv/admin-files
     ports:
       - "139:139"
       - "445:445"
@@ -22,15 +27,18 @@ services:
       context: nginx
     volumes:
       - hausordner-files:/srv/hausordner-files
+      - admin-files:/srv/admin-files
+      # - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
     ports:
       - "80:80"
     depends_on:
       - php-handler-hausordner
+      - php-handler-admin
     environment:
-      HAUSORDNER_USER: user
-      HAUSORDNER_PASS: pass
-      ADMIN_USER: admin
-      ADMIN_PASS: pass
+      HAUSORDNER_USER:
+      HAUSORDNER_PASS:
+      ADMIN_USER:
+      ADMIN_PASS:
   php-handler-hausordner:
     build:
       context: php
@@ -41,9 +49,23 @@ services:
       - hausordner-files:/srv/hausordner-files
     depends_on:
       - prepare
+  php-handler-admin:
+    build:
+      context: php
+      args:
+        UID: "1111"
+        USER_NAME: "admin"
+    volumes:
+      - admin-files:/srv/admin-files
+    depends_on:
+      - prepare
   prepare:
     image: alpine
-    command: "chown -R 2222:2222 /srv/hausordner-files"
+    command: "/bin/sh -c 'chown -R 2222:2222 /srv/hausordner-files; \
+                          chmod -R a+rw /srv/hausordner-files;' \
+                          chown -R 1111:1111 /srv/admin-files;' \
+                          chmod -R a+rw /srv/admin-files;'"
     volumes:
       - hausordner-files:/srv/hausordner-files
+      - admin-files:/srv/admin-files
 
