@@ -21,5 +21,5 @@ CMD ["nginx", "-g", "daemon off;"]
 
 ADD nginx-htpasswd-entry.sh /usr/local/bin/nginx-htpasswd-entry.sh
 ADD default.conf /etc/nginx/conf.d/default.conf
-ADD index.html /var/www/html/
+ADD index.html /var/www/html/hausordner/
 

@@ -1,14 +1,16 @@
 version: "3"
+volumes:
+  hausordner-files:
 services:
   samba:
     build:
       context: contrib/samba
-    command: -u "$AUTH_USER;$AUTH_PASS;1111"
-             -s "hausordner;/srv/files;yes;no;no;all;none;;Hausordner"
+    command: -u "$HAUSORDNER_USER;$HAUSORDNER_PASS;2222"
+             -s "hausordner;/srv/hausordner-files;yes;no;no;all;none;;Hausordner"
              -g "force user ="
              -r
     volumes:
-      - files:/srv/files
+      - hausordner-files:/srv/hausordner-files
     ports:
       - "139:139"
       - "445:445"
@@ -19,26 +21,29 @@ services:
     build:
       context: nginx
     volumes:
-      - files:/srv/files
+      - hausordner-files:/srv/hausordner-files
     ports:
       - "80:80"
     depends_on:
-      - php
+      - php-handler-hausordner
     environment:
-      AUTH_USER:
-      AUTH_PASS:
-  php:
+      HAUSORDNER_USER: user
+      HAUSORDNER_PASS: pass
+      ADMIN_USER: admin
+      ADMIN_PASS: pass
+  php-handler-hausordner:
     build:
       context: php
+      args:
+        UID: "2222"
+        USER_NAME: "krause"
     volumes:
-      - files:/srv/files
+      - hausordner-files:/srv/hausordner-files
     depends_on:
       - prepare
   prepare:
     image: alpine
-    command: "chown -R 1111:1111 /srv/files"
+    command: "chown -R 2222:2222 /srv/hausordner-files"
     volumes:
-      - files:/srv/files
+      - hausordner-files:/srv/hausordner-files
 
-volumes:
-  files:
