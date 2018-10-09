@@ -20,52 +20,18 @@ services:
       - "139:139"
       - "445:445"
       - "137-138:137-138/udp"
-    depends_on:
-      - prepare
-  web:
+  bargate:
     build:
-      context: nginx
+      context: bargate
+    image: bargate
     volumes:
-      - hausordner-files:/srv/hausordner-files
-      - admin-files:/srv/admin-files
-      # - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - "./bargate/bargate.conf:/etc/bargate.conf"
+      - "./bargate/shares.conf:/etc/bargate/shares.conf"
+      - "./bargate/templates:/etc/bargate/templates"
     ports:
-      - "80:80"
+      - "80:5000"
     depends_on:
-      - php-handler-hausordner
-      - php-handler-admin
-    environment:
-      HAUSORDNER_USER:
-      HAUSORDNER_PASS:
-      ADMIN_USER:
-      ADMIN_PASS:
-  php-handler-hausordner:
-    build:
-      context: php
-      args:
-        UID: "2222"
-        USER_NAME: "krause"
-    volumes:
-      - hausordner-files:/srv/hausordner-files
-    depends_on:
-      - prepare
-  php-handler-admin:
-    build:
-      context: php
-      args:
-        UID: "1111"
-        USER_NAME: "admin"
-    volumes:
-      - admin-files:/srv/admin-files
-    depends_on:
-      - prepare
-  prepare:
-    image: alpine
-    command: "/bin/sh -c 'chown -R 2222:2222 /srv/hausordner-files; \
-                          chmod -R a+rw /srv/hausordner-files;' \
-                          chown -R 1111:1111 /srv/admin-files;' \
-                          chmod -R a+rw /srv/admin-files;'"
-    volumes:
-      - hausordner-files:/srv/hausordner-files
-      - admin-files:/srv/admin-files
+      - samba
+  redis:
+    image: redis:alpine
 

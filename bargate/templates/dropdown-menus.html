@@ -1,0 +1,8 @@
+<li {% if active == 'hausordner' %} class="active"{% endif %}>
+  <a href="{{ url_for('hausordner') }}"><i class="fa fa-cloud" aria-hidden="true"></i> Hausordner</a>
+</li>
+{%- if session['username'] == 'admin' -%}
+<li {% if active == 'admin' %}class="active"{% endif %}>
+  <a href="{{ url_for('admin') }}"><i class="fa fa-lock" aria-hidden="true"></i> Admin</a>
+</li>
+{%- endif -%}
