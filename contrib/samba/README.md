@@ -63,10 +63,13 @@ OR set local storage:
                     required arg: "<workgroup>"
                     <workgroup> for samba
         -W          Allow access wide symbolic links
+        -I          Add an include option at the end of the smb.conf
+                    required arg: "<include file path>"
+                    <include file path> in the container, e.g. a bind mount
 
     The 'command' (if provided and valid) will be run instead of samba
 
-ENVIRONMENT VARIABLES (only available with `docker run`)
+ENVIRONMENT VARIABLES
 
  * `CHARMAP` - As above, configure character mapping
  * `GLOBAL` - As above, configure a global option
@@ -82,9 +85,13 @@ ENVIRONMENT VARIABLES (only available with `docker run`)
  * `WORKGROUP` - As above, set workgroup
  * `USERID` - Set the UID for the samba server
  * `GROUPID` - Set the GID for the samba server
+ * `INCLUDE` - As above, add a smb.conf include
 
 **NOTE**: if you enable nmbd (via `-n` or the `NMBD` environment variable), you
 will also want to expose port 137 and 138 with `-p 137:137/udp -p 138:138/udp`.
+
+**NOTE2**: there are reports that `-n` and `NMBD` only work if you have the
+container configured to use the hosts network stack.
 
 ## Examples
 
