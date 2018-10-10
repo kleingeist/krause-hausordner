@@ -14,6 +14,8 @@ EXPOSE 5000
 ENTRYPOINT ["gunicorn"]
 CMD ["--config", "/etc/gunicorn-config.py", "bargate:app"]
 
-ADD gunicorn-config.py /etc/gunicorn-config.py
-# ADD bargate.conf /etc/bargate.conf
+COPY gunicorn-config.py /etc/gunicorn-config.py
+COPY bargate.conf /etc/bargate.conf
+COPY shares.conf /etc/bargate/shares.conf
+COPY templates /etc/bargate/templates/
 

@@ -6,10 +6,10 @@ services:
   samba:
     build:
       context: contrib/samba
-    command: -u "$ADMIN_USER;$ADMIN_PASS;1111"
+    command: -u "admin;$ADMIN_PASS;1111"
              -u "$HAUSORDNER_USER;$HAUSORDNER_PASS;2222"
              -s "hausordner;/srv/hausordner-files;yes;no;no;all;none;;Hausordner"
-             -s "admin;/srv/admin-files;yes;no;no;$ADMIN_USER;none;;Admin Ordner"
+             -s "admin;/srv/admin-files;yes;no;no;admin;none;;Admin Ordner"
              -n
              -g "force user ="
              -r
@@ -24,14 +24,11 @@ services:
     build:
       context: bargate
     image: bargate
-    volumes:
-      - "./bargate/bargate.conf:/etc/bargate.conf"
-      - "./bargate/shares.conf:/etc/bargate/shares.conf"
-      - "./bargate/templates:/etc/bargate/templates"
     ports:
       - "80:5000"
     depends_on:
       - samba
+      - redis
   redis:
     image: redis:alpine
 
