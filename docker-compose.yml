@@ -13,6 +13,7 @@ services:
              -n
              -g "force user ="
              -r
+             -p
     volumes:
       - hausordner-files:/srv/hausordner-files
       - admin-files:/srv/admin-files
