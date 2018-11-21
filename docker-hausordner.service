@@ -1,0 +1,17 @@
+[Unit]
+Description=Docker Hausordner Service
+Requires=docker.service
+After=docker.service
+
+[Service]
+WorkingDirectory=/opt/krause-hausordner
+EnvironmentFile=-/etc/docker-hausordner.env
+ExecStart=/usr/bin/docker-compose up --remove-orphans
+ExecStop=/usr/bin/docker-compose down
+Restart=on-failure
+TimeoutStartSec=0
+StartLimitInterval=60
+StartLimitBurst=3
+
+[Install]
+WantedBy=multi-user.target
