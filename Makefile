@@ -17,6 +17,7 @@ uninstall:
 install: uninstall
 	mkdir -p /opt/krause-hausordner
 	cp -r docker-compose.yml bargate contrib .env /opt/krause-hausordner/
-	cp docker-hausordner.service /etc/systemd/system/docker-hausordner.service
 	cd /opt/krause-hausordner; docker-compose build
+	cp docker-hausordner.service /etc/systemd/system/docker-hausordner.service
+	sed -i 's#/usr/bin/docker-compose#'`which docker-compose`'#' /etc/systemd/system/docker-hausordner.service
 
