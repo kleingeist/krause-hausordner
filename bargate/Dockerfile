@@ -19,3 +19,5 @@ COPY bargate.conf /etc/bargate.conf
 COPY shares.conf /etc/bargate/shares.conf
 COPY templates /etc/bargate/templates/
 
+RUN sed -i '/SECRET_KEY = /c\SECRET_KEY = "'`</dev/urandom tr -dc "A-Za-z0-9" | head -c "32" ; echo`'"' /etc/bargate.conf
+RUN sed -i '/ENCRYPT_KEY = /c\ENCRYPT_KEY = "'`</dev/urandom tr -dc "A-Za-z0-9" | head -c "32" ; echo`'"' /etc/bargate.conf
